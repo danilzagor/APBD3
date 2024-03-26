@@ -14,13 +14,21 @@ public class RefrigeratedContainer(double cargoMass,
             TypeOfProduct = product;
             
         if(TypeOfProduct.Equals(product))
-            if (product.Value > temperature)
+            if (product.Value < temperature)
             {
                 base.FillTheContainer(mass);
                 Temperature = temperature;
             }
-            else Console.Write("Provided temperature is lower than required");
-        else Console.Write("Provided product differs from what this container can contain");
+            else
+            {
+                Console.WriteLine("Provided temperature is lower than required");
+                EmptyTheContainer();
+            }
+        else
+        {
+            Console.WriteLine("Provided product differs from what this container can contain");
+            EmptyTheContainer();
+        }
     }
 
     public override void EmptyTheContainer()

@@ -12,9 +12,9 @@ public struct Products
     public static readonly KeyValuePair<string, double> Sausages = new ("Sausages",5);
     public static readonly KeyValuePair<string, double> Butter = new ("Butter",20.5);
     public static readonly KeyValuePair<string, double> Eggs = new ("Eggs",19);
-    public static readonly List<string> ListOfAllProducts = new List<string>
+    public static readonly List<KeyValuePair<string, double>> ListOfAllProducts = new List<KeyValuePair<string, double>>
     {
-        Bananas.Key, Chocolate.Key, Fish.Key, Meat.Key, IceCream.Key, FrozenPizza.Key, Cheese.Key, Sausages.Key, Butter.Key, Eggs.Key
+        Bananas, Chocolate, Fish, Meat, IceCream, FrozenPizza, Cheese, Sausages, Butter, Eggs
     };
 
 }

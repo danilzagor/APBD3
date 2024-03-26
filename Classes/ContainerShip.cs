@@ -7,27 +7,27 @@ public class ContainerShip(
 {
     private double CurrentWeightOnBoard { get; set; }
 
-    public List<Container> ContainersOnBoard { get; protected set; }
+    public List<Container> ContainersOnBoard { get; protected set; } = new();
     public double Speed { get; protected set; } = speed;
     public int MaxNumberOfContainers { get; protected set; } = maxNumberOfContainers;
-    public double MaxWeightOfAllContainers { get; protected set; } = maxNumberOfContainers;
+    public double MaxWeightOfAllContainers { get; protected set; } = maxWeightOfAllContainers;
 
     public bool LoadNewContainerOnBoard(Container container)
     {
-        if (container.ContainerMass + CurrentWeightOnBoard / 1000 < maxWeightOfAllContainers)
+        if (container.ContainerMass + container.CargoMass + CurrentWeightOnBoard / 1000 < maxWeightOfAllContainers)
             if (ContainersOnBoard.Count + 1 <= MaxNumberOfContainers)
             {
                 ContainersOnBoard.Add(container);
-                CurrentWeightOnBoard += container.ContainerMass;
+                CurrentWeightOnBoard += container.ContainerMass+container.CargoMass;
                 return true;
             }
             else
             {
-                Console.Write("Maximum number of container on board exceeded");
+                Console.WriteLine("Maximum number of container on board exceeded");
                 return false;
             }
 
-        Console.Write("Maximum weight of containers on board exceeded");
+        Console.WriteLine("Maximum weight of containers on board exceeded");
         return false;
     }
 
@@ -41,59 +41,69 @@ public class ContainerShip(
                 ContainersOnBoard.AddRange(containers);
                 CurrentWeightOnBoard += weightOfAllContainers;
             }
-            else Console.Write("Maximum number of container on board exceeded");
+            else Console.WriteLine("Maximum number of container on board exceeded");
         }
-        else Console.Write("Maximum weight of containers on board exceeded");
+        else Console.WriteLine("Maximum weight of containers on board exceeded");
     }
 
-    public void UnloadContainerFromBoard()
+    public Container UnloadContainerFromBoard()
     {
-        Console.Write("Write a container serial number to unload container");
+        Console.WriteLine("Enter a container serial number to unload container");
         var containerToRemove = ChooseContainer();
         ContainersOnBoard.Remove(containerToRemove);
+        CurrentWeightOnBoard -= containerToRemove.ContainerMass+containerToRemove.CargoMass;
+        return containerToRemove;
     }
 
     public void TransportContainerFromThisShipToAnother(ContainerShip toTransport)
     {
-        Console.Write("Write a container serial number to transport container");
+        Console.WriteLine("Enter a container serial number to transport container");
         var containerToTransport = ChooseContainer();
         if (containerToTransport != null && toTransport.LoadNewContainerOnBoard(containerToTransport))
         {
             ContainersOnBoard.Remove(containerToTransport);
-            Console.Write("Success!");
+            CurrentWeightOnBoard -= containerToTransport.ContainerMass + containerToTransport.CargoMass;
+            Console.WriteLine("Success!");
         }
-        else Console.Write("Couldn't transport container");
+        else Console.WriteLine("Couldn't transport container");
     }
 
-    public void SubstituteOneContainerByAnother(Container newContainer)
+    public Container SubstituteOneContainerByAnother(Container newContainer)
     {
-        Console.Write("Write a container serial number to change container");
+        Console.WriteLine("Enter a container serial number to change container");
         var containerToChange = ChooseContainer();
         if (!ContainersOnBoard.Equals(null))
         {
             ContainersOnBoard.Remove(containerToChange);
-            if(LoadNewContainerOnBoard(newContainer))
-                Console.Write("Success");
+            if (LoadNewContainerOnBoard(newContainer))
+            {
+                CurrentWeightOnBoard -= containerToChange.ContainerMass + containerToChange.CargoMass;
+                Console.WriteLine("Success");
+            }
+                
             else
             {
                 ContainersOnBoard.Add(containerToChange);
-                Console.Write("Couldn't substitute old container by new");
+                Console.WriteLine("Couldn't substitute old container by new");
+                return newContainer;
             }
         }
+
+        return containerToChange;
     }
 
     private Container ChooseContainer()
     {
         foreach (var container in ContainersOnBoard)
         {
-            Console.Write(container.SerialNumber);
+            Console.WriteLine(container.SerialNumber);
         }
 
         string input = Console.ReadLine();
         Container containerToChoose = null;
         for (int i = 0; i < ContainersOnBoard.Count; i++)
         {
-            if (ContainersOnBoard[i].SerialNumber.Equals(input))
+            if (ContainersOnBoard[i].SerialNumber==input)
                 containerToChoose = ContainersOnBoard[i];
         }
 
@@ -104,12 +114,12 @@ public class ContainerShip(
     {
         ContainersOnBoard.ForEach(container =>
         {
-            Console.Write(container.SerialNumber);
+            Console.WriteLine(container.SerialNumber);
         });
     }
 
     public override string ToString()
     {
-        return $"{nameof(CurrentWeightOnBoard)}: {CurrentWeightOnBoard}, {nameof(ContainersOnBoard)}: {ContainersOnBoard}, {nameof(Speed)}: {Speed}, {nameof(MaxNumberOfContainers)}: {MaxNumberOfContainers}, {nameof(MaxWeightOfAllContainers)}: {MaxWeightOfAllContainers}";
+        return $"{nameof(CurrentWeightOnBoard)}: {CurrentWeightOnBoard},  {nameof(Speed)}: {Speed}, {nameof(MaxNumberOfContainers)}: {MaxNumberOfContainers}, {nameof(MaxWeightOfAllContainers)}: {MaxWeightOfAllContainers}";
     }
 }

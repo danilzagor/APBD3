@@ -12,7 +12,7 @@ public class GasContainer(double cargoMass,
 
     public void SendHazardNotification()
     {
-        Console.Write("Attention, Hazard situation, serial number of the container = " + SerialNumber);
+        Console.WriteLine("Attention, Hazard situation, serial number of the container = " + SerialNumber);
     }
 
     public override void EmptyTheContainer()
